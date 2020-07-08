@@ -52,7 +52,7 @@ const App = () => {
 	const WS_PROVIDER = process.env.REACT_APP_WS_PROVIDER;
 
 	if (!WS_PROVIDER) {
-		console.error('REACT_APP_WS_PROVIDER not set.');
+		console.error('REACT_APP_WS_PROVIDER not set!');
 		return null;
 	}
 
