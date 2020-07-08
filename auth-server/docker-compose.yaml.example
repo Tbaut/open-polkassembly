@@ -11,10 +11,10 @@ services:
     ports:
     - "5431:5432"
     environment:
-      POSTGRES_USER: <user>
-      POSTGRES_PASSWORD: <password>
+      POSTGRES_USER: open<user>
+      POSTGRES_PASSWORD: open<password>
       POSTGRES_DB: governance-auth
       PGDATA: /var/lib/postgresql/data
     volumes:
     # persistent data locally
-    - /var/polkassembly/auth-server/data:/var/lib/postgresql/data
+    - /var/polkassembly/auth-server/open-data:/var/lib/postgresql/data

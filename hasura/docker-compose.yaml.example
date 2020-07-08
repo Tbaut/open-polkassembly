@@ -6,13 +6,13 @@ services:
     ports:
     - "5434:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: openpostgres
+      POSTGRES_PASSWORD: openpostgres
       POSTGRES_DB: governance-discussion
       PGDATA: /var/lib/postgresql/data
     volumes:
     # persistent data locally
-    - /var/polkassembly/hasura/data:/var/lib/postgresql/data
+    - /var/polkassembly/hasura/open-data:/var/lib/postgresql/data
   graphql-engine:
     network_mode: "host"
     image: hasura/graphql-engine:v1.3.0-beta.2
@@ -25,7 +25,7 @@ services:
     - "postgres"
     restart: always
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@postgres:5434/governance-discussion
+      HASURA_GRAPHQL_DATABASE_URL: postgres://openpostgres:openpostgres@postgres:5434/governance-discussion
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       HASURA_GRAPHQL_ADMIN_SECRET: <YOUR_HASURA_ADMIN_SECRET>
@@ -35,7 +35,7 @@ services:
       HASURA_ONCHAIN_LINK_CREATE_HOOK: "http://localhost:8010/auth/event/onchain_link/create"
       HASURA_EVENT_SECRET: "<shared secret key with auth server>"
       HASURA_AUTH_SERVER_REMOTE_SCHEMA: http://auth-server-service:8010/auth/graphql
-      HASURA_CHAIN_DB_REMOTE_SCHEMA: http://chain-db-open-server-service:4000
+      HASURA_CHAIN_DB_REMOTE_SCHEMA: http://localhost:4466
       # Remote schemas on Mac OS workaround:
       # HASURA_AUTH_SERVER_REMOTE_SCHEMA: "http://host.docker.internal:8010/auth/graphql"
       # HASURA_CHAIN_DB_REMOTE_SCHEMA: "http://host.docker.internal:4000"
