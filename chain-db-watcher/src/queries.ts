@@ -133,7 +133,7 @@ export const tipSubscription = gql`
 				node: {
 					tipStatus_some: {
 						AND: [
-							{ status: "Opened" },
+							{ status: "TipOpened" },
 							{ blockNumber: { number_gte: $startBlock } }
 						]
 					}
@@ -143,12 +143,12 @@ export const tipSubscription = gql`
             mutation
             node {
                 id
-				hash
-				reason
-				who
-				finder
-				finderFee
-				closes
+                hash
+                reason
+                who
+                finder
+                finderFee
+                closes
                 tipStatus(orderBy: id_DESC) {
                     blockNumber {
                         number

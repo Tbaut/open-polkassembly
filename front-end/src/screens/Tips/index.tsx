@@ -21,11 +21,11 @@ const OnchainTipContainer = ({ className } : {className?: string}) => {
 				<Grid.Column mobile={16} tablet={16} computer={6}>
 					<InfoBox
 						dismissable={true}
-						content='This is the place to discuss on-chain tip proposals.
-						On-chain tip posts are automatically generated as soon as they are created on the chain.
+						content='This is the place to discuss on-chain tips.
+						Tip posts are automatically generated as soon as they are created on-chain.
 						Only the proposer is able to edit them.'
 						name='onchainInfo'
-						title='About On-chain tip proposals'
+						title='About On-chain tips'
 					/>
 				</Grid.Column>
 			</Grid>

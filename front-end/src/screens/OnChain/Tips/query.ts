@@ -5,7 +5,7 @@
 import gql from 'graphql-tag';
 import { authorFields } from 'src/fragments/author';
 
-export const QUERY_LATEST_TREASURY_PROPOSALS = gql`
+export const QUERY_LATEST_TIP_PROPOSALS = gql`
     query LatestTipPosts($postType: Int!, $postTopic: Int!, $limit: Int! = 5 ) {
         posts(limit: $limit, where: {
             type: {
@@ -51,7 +51,7 @@ export const QUERY_LATEST_TREASURY_PROPOSALS = gql`
             onchain_link {
                 id
                 onchain_tip_id
-                onchain_tip(where: {NOT: {tipStatus_some: {OR: [{status: "Closed"}, {status: "Closing"}, {status: "Retracted"}]}}}) {
+                onchain_tip(where: {NOT: {tipStatus_some: {OR: [{status: "TipClosed"}, {status: "TipClosing"}, {status: "TipRetracted"}]}}}) {
                     id
                     tipStatus(last: 1) {
                         id
