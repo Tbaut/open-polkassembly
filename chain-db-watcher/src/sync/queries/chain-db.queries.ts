@@ -111,10 +111,10 @@ export const getOnchainTreasuryProposals = gql`
 export const getOnchainTips = gql`
     query getOnchainTips($startBlock: Int!) {
         tips (
-			where: {
+            where: {
                 tipStatus_some: {
                     AND: [
-                        { status: "Opened" }
+                        { status: "TipOpened" }
                         { blockNumber: { number_gte: $startBlock } }
                     ]
                 }

@@ -17736,6 +17736,10 @@ export type OnchainLinkTipFragment = (
     & { tipStatus?: Maybe<Array<(
       { __typename?: 'TipStatus' }
       & Pick<TipStatus, 'id' | 'status'>
+      & { blockNumber: (
+        { __typename?: 'BlockNumber' }
+        & Pick<BlockNumber, 'startDateTime' | 'number'>
+      ) }
     )>> }
   )>> }
 );
@@ -18247,6 +18251,10 @@ export const OnchainLinkTipFragmentDoc = gql`
     tipStatus(last: 1) {
       id
       status
+      blockNumber {
+        startDateTime
+        number
+      }
     }
   }
 }
@@ -19789,7 +19797,7 @@ export const LatestTipPostsDocument = gql`
     onchain_link {
       id
       onchain_tip_id
-      onchain_tip(where: {NOT: {tipStatus_some: {OR: [{status: "Closed"}, {status: "Closing"}, {status: "Retracted"}]}}}) {
+      onchain_tip(where: {NOT: {tipStatus_some: {OR: [{status: "TipClosed"}, {status: "TipClosing"}, {status: "TipRetracted"}]}}}) {
         id
         tipStatus(last: 1) {
           id
