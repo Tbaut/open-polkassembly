@@ -18,9 +18,13 @@ export const client = redis.createClient(process.env.REDIS_URL);
  * @returns values string
  */
 export const redisGet = (key: string): Promise<string> => new Promise((resolve, reject) => {
-	client.get(key, (err: Error | null, value: string) => {
+	client.get(key, (err, value) => {
 		if (err) {
 			return reject(err);
+		}
+
+		if (!value) {
+			return reject(new Error('Value is null'));
 		}
 
 		resolve(value);

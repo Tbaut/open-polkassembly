@@ -32,6 +32,7 @@
 		"@polkadot/util": "^2.16.1",
 		"@polkadot/util-crypto": "^2.16.1",
 		"@sendgrid/mail": "^6.5.5",
+		"@textile/hub": "^0.3.3",
 		"apollo-server": "^2.14.2",
 		"apollo-server-express": "^2.14.2",
 		"argon2": "^0.25.1",
@@ -45,6 +46,7 @@
 		"express": "^4.17.1",
 		"express-validator": "^5.3.1",
 		"graphql": "^14.6.0",
+		"isomorphic-ws": "^4.0.1",
 		"jsonwebtoken": "^8.5.1",
 		"knex": "^0.20.15",
 		"markdown-it": "^11.0.0",
@@ -58,7 +60,8 @@
 		"tmp": "^0.1.0",
 		"typescript": "^3.9.3",
 		"uuidv4": "^6.1.0",
-		"validator": "^12.2.0"
+		"validator": "^12.2.0",
+		"ws": "^7.3.1"
 	},
 	"devDependencies": {
 		"@polkadot/types": "^1.22.1",

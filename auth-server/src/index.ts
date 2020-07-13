@@ -14,6 +14,7 @@ import expressValidator from 'express-validator';
 import resolvers from './resolvers';
 import routes from './routes';
 import schema from './schema';
+import { setupNewDB } from './textileHandlers/setupNewDB';
 import { Context } from './types';
 import verifyEnvVariables from './utils/verifyEnvVariables';
 
@@ -42,6 +43,20 @@ if (process.env.NODE_ENV === 'test') {
 
 	if (!process.env.JWT_KEY_PASSPHRASE) {
 		throw new Error('JWT_KEY_PASSPHRASE private key passphrase required');
+	}
+
+	if (!process.env.TEXTILE_HUB_KEY || !process.env.TEXTILE_HUB_SECRET) {
+		throw new Error('TEXTILE_HUB_KEY and TEXTILE_HUB_SECRET need to be set as env variable');
+	}
+
+	if (!process.env.TEXTILE_THREAD_NAME) {
+		throw new Error('TEXTILE_THREAD_NAME needs to be set as env variable');
+	}
+
+	if (!process.env.TEXTILE_THREAD_ID && process.env.TEXTILE_THREAD_NAME) {
+		console.log(chalk.red('TEXTILE_THREAD_ID not set, a new DB will be created...'));
+		// This exits after created the thread (DB) and the collections
+		setupNewDB(process.env.TEXTILE_THREAD_NAME);
 	}
 }
 

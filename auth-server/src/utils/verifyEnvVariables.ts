@@ -16,7 +16,9 @@ export default function verifyEnvVariables (): void {
 		'PORT',
 		'PROPOSAL_BOT_USER_ID',
 		'DOMAIN_PROTOCOL',
-		'DOMAIN_NAME'
+		'DOMAIN_NAME',
+		'TEXTILE_THREAD_NAME',
+		'TEXTILE_THREAD_ID'
 	];
 	const secrets = [
 		'JWT_PUBLIC_KEY', // setting it as a secret because it's spamming otherwise
@@ -25,7 +27,9 @@ export default function verifyEnvVariables (): void {
 		'REDIS_URL',
 		'DATABASE_URL',
 		'HASURA_EVENT_SECRET',
-		'SENDGRID_API_KEY'
+		'SENDGRID_API_KEY',
+		'TEXTILE_HUB_KEY',
+		'TEXTILE_HUB_SECRET'
 	];
 
 	publics.forEach(env => {
