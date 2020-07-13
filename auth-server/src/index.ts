@@ -55,7 +55,8 @@ if (process.env.NODE_ENV === 'test') {
 
 	if (!process.env.TEXTILE_THREAD_ID && process.env.TEXTILE_THREAD_NAME) {
 		console.log(chalk.red('TEXTILE_THREAD_ID not set, a new DB will be created...'));
-		// This exits after created the thread (DB) and the collections
+		// This exits after we created the thread (DB) and the collections
+		// the newly created threadId is prnted to the console and should be used as env variable
 		setupNewDB(process.env.TEXTILE_THREAD_NAME);
 	}
 }
