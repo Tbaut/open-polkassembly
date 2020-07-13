@@ -3,8 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Client, KeyInfo } from '@textile/hub';
 
-const key = process.env.REACT_APP_HUB_KEY || '';
-const secret = process.env.REACT_APP_HUB_SECRET || '';
+const key = process.env.TEXTILE_HUB_KEY || '';
+const secret = process.env.TEXTILE_HUB_SECRET || '';
 
 export async function getClientWithKeyInfo (): Promise<Client> {
 	const keyInfo: KeyInfo = {
