@@ -33,6 +33,7 @@
 		"@polkadot/util-crypto": "^2.16.1",
 		"@sendgrid/mail": "^6.5.5",
 		"@textile/hub": "^0.3.3",
+		"@textile/threads-core": "^0.1.30",
 		"apollo-server": "^2.14.2",
 		"apollo-server-express": "^2.14.2",
 		"argon2": "^0.25.1",

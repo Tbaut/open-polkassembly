@@ -288,3 +288,10 @@ export interface ContextUserId {
     ctx: Context;
     userId: number;
 }
+
+export interface TextileTokenInfo {
+    key: string;
+    libp2pIdentity: string;
+    msg: string;
+    sig: string;
+}
