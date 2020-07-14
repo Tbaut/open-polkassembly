@@ -30,6 +30,7 @@ import signupMutation from './mutation/signup';
 import undoEmailChange from './mutation/undoEmailChange';
 import verifyEmail from './mutation/verifyEmail';
 import subscription from './query/subscription';
+import textileTokenQuery from './query/textileToken';
 import tokenQuery from './query/token';
 import userQuery from './query/user';
 import address from './type/address';
@@ -42,6 +43,7 @@ import notificationPreferencesType from './type/notificationPreferences';
 import notificationPreferencesInput from './type/notificationPreferencesInput';
 import publicUser from './type/publicUser';
 import subscriptionType from './type/subscription';
+import TextileTokenInfo from './type/textileTokenInfo';
 import tokenType from './type/token';
 import undoEmailChangeResponse from './type/undoEmailChangeResponse';
 import userType from './type/user';
@@ -57,12 +59,14 @@ export default gql`
 	${notificationPreferencesInput}
 	${publicUser}
 	${subscriptionType}
+	${TextileTokenInfo}
 	${tokenType}
 	${undoEmailChangeResponse}
 	${userType}
 
 	type Query {
 		${subscription}
+		${textileTokenQuery}
 		${tokenQuery}
 		${userQuery}
 	}

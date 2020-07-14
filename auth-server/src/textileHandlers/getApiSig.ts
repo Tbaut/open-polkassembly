@@ -8,7 +8,8 @@ const secret = process.env.TEXTILE_HUB_SECRET || '';
 
 export const getApiSig = async (): Promise<APISig> => {
 	// for our front-end user to be able to create a token
-	const secondsExpiration = 60;
+	// CHANGE ME 1h IS FOR TEST
+	const secondsExpiration = 3600;
 	const expiration = new Date(Date.now() + 1000 * secondsExpiration);
 	const apiSig = await createAPISig(secret, expiration);
 

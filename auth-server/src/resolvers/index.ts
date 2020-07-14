@@ -28,6 +28,7 @@ import signup from './mutation/signup';
 import undoEmailChange from './mutation/undoEmailChange';
 import verifyEmail from './mutation/verifyEmail';
 import subscription from './query/subscription';
+import textileToken from './query/textileToken';
 import token from './query/token';
 import user from './query/user';
 
@@ -61,6 +62,7 @@ export default {
 	},
 	Query: {
 		subscription,
+		textileToken,
 		token,
 		user
 	}

@@ -2,6 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { Client, ThreadID } from '@textile/hub';
+import { Libp2pCryptoIdentity } from '@textile/threads-core';
 import styled from '@xstyled/styled-components';
 import { ApolloQueryResult } from 'apollo-client';
 import React, { useContext, useEffect,useState } from 'react';
@@ -29,7 +31,7 @@ import { DiscussionPostAndCommentsQuery,
 	TreasuryProposalPostFragment,
 	useEditPostMutation
 } from '../generated/graphql';
-import { NotificationStatus } from '../types';
+import { NotificationStatus, textileCollection, TextilePost } from '../types';
 import Button from '../ui-components/Button';
 import FilteredError from '../ui-components/FilteredError';
 import { Form } from '../ui-components/Form';
@@ -72,8 +74,39 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 		setNewContent(content || '');
 		setNewTitle(title || '');
 	};
-	const handleSave = () => {
+	const handleSave = async () => {
 		toggleEdit();
+
+		const textileTokenInfo = {
+			'key': 'brf3mvikosuht6syaqjmfaqtnxi',
+			'libp2pIdentity': 'bbaareydwzseqsqvljvsb2h3ct2em7gz7t3edbux2fntas3u7tr7odlo4iml6bvcpfcfmf7lrhu6eadvwlwo4li4caqbts2peu577obgqxx3taf7a2rhsrcwc7vyt2pcab23f3hofuobaiazznhsko77xatil35zq',
+			'msg': '2020-07-14T23:41:40.122Z',
+			'sig': 'bvsapvqxdmst45dh4fm5tpozgckijzbfsc44ic62v4z54k7g5syna',
+			'token': 'eyJhbGciOiJFZDI1NTE5IiwidHlwIjoiSldUIn0.eyJpYXQiOjE1OTQ3NjY1MDEsImlzcyI6ImJiYWFyZWlnd2pvYXd1ZWc1a3ZobWMzNjI3Z3Zja2htZTd6emZlbnVqYXVqcHRodGd6Y21odHRvYTZ1Iiwic3ViIjoiYmJhYXJlaWF4NGRrZTZrZWt5bDZ4Y3BqNGlhaGxteG01eXdyeWViYWRoZnU2amozNzY0Y25icHB4Z2EifQ.vlOinb41Rf5oLMz0QE0gFOra8xIxm7D291UJfj_583CVPYIqBt6ii5S-qEAxFMy9dyoWMkqS3x2NgW-_cxdwAg'
+		};
+		const client = Client.withUserAuth({ ...textileTokenInfo });
+		const user = await Libp2pCryptoIdentity.fromString(textileTokenInfo.libp2pIdentity);
+		await client.getToken(user);
+
+		if (!process.env.REACT_APP_TEXTILE_THREAD_ID) {
+			console.error('REACT_APP_TEXTILE_THREAD_ID env not defined');
+		}
+
+		const thread = ThreadID.fromString(process.env.REACT_APP_TEXTILE_THREAD_ID || '');
+
+		await client.create(thread, textileCollection.POST, [
+			{
+				_id: '',
+				author: author?.username,
+				content: newContent,
+				createdAd: Date.now().toString(),
+				title: newTitle
+			} as TextilePost
+		] );
+
+		const posts = await client.find(thread, textileCollection.POST, {});
+		console.log('get thread', posts);
+
 		editPostMutation( {
 			variables: {
 				content: newContent,

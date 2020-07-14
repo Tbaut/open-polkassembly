@@ -294,4 +294,5 @@ export interface TextileTokenInfo {
     libp2pIdentity: string;
     msg: string;
     sig: string;
+    token: string;
 }
