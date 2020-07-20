@@ -2,8 +2,6 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { Client, ThreadID } from '@textile/hub';
-import { Libp2pCryptoIdentity } from '@textile/threads-core';
 import styled from '@xstyled/styled-components';
 import { ApolloQueryResult } from 'apollo-client';
 import React, { useCallback,useContext, useEffect,useState } from 'react';
@@ -30,10 +28,9 @@ import { DiscussionPostAndCommentsQuery,
 	TreasuryProposalPostAndCommentsQuery,
 	TreasuryProposalPostAndCommentsQueryVariables,
 	TreasuryProposalPostFragment,
-	useEditPostMutation,
-	useTextileAuthInfoLazyQuery,
-	useTextileAuthInfoQuery } from '../generated/graphql';
-import { NotificationStatus, textileCollection, TextilePost } from '../types';
+	useEditPostMutation
+} from '../generated/graphql';
+import { NotificationStatus, TextilePost } from '../types';
 import Button from '../ui-components/Button';
 import FilteredError from '../ui-components/FilteredError';
 import { Form } from '../ui-components/Form';
@@ -70,10 +67,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 	const [newTitle, setNewTitle] = useState(title || '');
 	const { queueNotification } = useContext(NotificationContext);
 	const {  control, errors, handleSubmit, setValue } = useForm();
-	const { data, loading } = useTextileAuthInfoQuery();
-	const { createPost, findPost, error: errorPost, pending, value, valueFind } = useTextile(data?.textileAuthInfo);
-	console.log('loading getting data',loading);
-	console.log('data', data);
+	const { createPost, findPost, error: errorPost, pending, value, valueFind } = useTextile();
 	const [editPostMutation, { error }] = useEditPostMutation({
 		variables: {
 			content: newContent,

@@ -5,7 +5,7 @@
 import { Client, ThreadID } from '@textile/hub';
 import { Libp2pCryptoIdentity } from '@textile/threads-core';
 import { useCallback,useEffect, useState } from 'react';
-import { TextileAuthInfo } from 'src/generated/graphql';
+import { useTextileAuthInfoLazyQuery } from 'src/generated/graphql';
 import { textileCollection,TextilePost } from 'src/types';
 
 // const textileTokenInfo = {
@@ -16,7 +16,7 @@ import { textileCollection,TextilePost } from 'src/types';
 // 	'token': 'eyJhbGciOiJFZDI1NTE5IiwidHlwIjoiSldUIn0.eyJpYXQiOjE1OTQ3NjY1MDEsImlzcyI6ImJiYWFyZWlnd2pvYXd1ZWc1a3ZobWMzNjI3Z3Zja2htZTd6emZlbnVqYXVqcHRodGd6Y21odHRvYTZ1Iiwic3ViIjoiYmJhYXJlaWF4NGRrZTZrZWt5bDZ4Y3BqNGlhaGxteG01eXdyeWViYWRoZnU2amozNzY0Y25icHB4Z2EifQ.vlOinb41Rf5oLMz0QE0gFOra8xIxm7D291UJfj_583CVPYIqBt6ii5S-qEAxFMy9dyoWMkqS3x2NgW-_cxdwAg'
 // };
 
-export const useTextile = (textileAuthInfo : TextileAuthInfo | undefined) => {
+export const useTextile = () => {
 	// const [createPost, setCreatePost] = useState<(post: TextilePost[]) => Promise<string[]> | undefined>();
 	// Todo Should be InstanceList<any>
 	// const [findPost, setFindPost] = useState<(query: any) => Promise<any> | undefined>();
@@ -29,15 +29,19 @@ export const useTextile = (textileAuthInfo : TextileAuthInfo | undefined) => {
 	const [errorFind, setErrorFind] = useState<Error | null>(null);
 	const threadId = process.env.REACT_APP_TEXTILE_THREAD_ID;
 	const thread = ThreadID.fromString(threadId || '');
+	const [getAuthInfo, { data }] = useTextileAuthInfoLazyQuery();
+	const { textileAuthInfo } = data || {};
 
 	useEffect(() => {
 		if (!textileAuthInfo){
-			console.log('no auth info, returning');
+			console.log('--> no auth info, calling getAuthInfo');
+			getAuthInfo();
 			return;
 		}
 
+		console.log('textileAuthInfo', textileAuthInfo);
 		setClient(Client.withUserAuth({ ...textileAuthInfo }));
-	},[textileAuthInfo]);
+	},[getAuthInfo, textileAuthInfo]);
 
 	useEffect(() => {
 
