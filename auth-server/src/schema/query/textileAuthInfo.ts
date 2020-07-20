@@ -3,11 +3,5 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 export default `
-	type TextileTokenInfo {
-		key: String
-		libp2pIdentity: String
-		msg: String
-		sig: String
-		token: String
-	}
+    textileAuthInfo: TextileAuthInfo!
 `;

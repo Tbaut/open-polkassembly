@@ -6,9 +6,10 @@ import { Client, ThreadID } from '@textile/hub';
 import { Libp2pCryptoIdentity } from '@textile/threads-core';
 import styled from '@xstyled/styled-components';
 import { ApolloQueryResult } from 'apollo-client';
-import React, { useContext, useEffect,useState } from 'react';
+import React, { useCallback,useContext, useEffect,useState } from 'react';
 import { Controller,useForm } from 'react-hook-form';
 import { GoCheck, GoX } from 'react-icons/go';
+import { useTextile } from 'src/hooks';
 
 import { NotificationContext } from '../context/NotificationContext';
 import { DiscussionPostAndCommentsQuery,
@@ -29,8 +30,9 @@ import { DiscussionPostAndCommentsQuery,
 	TreasuryProposalPostAndCommentsQuery,
 	TreasuryProposalPostAndCommentsQueryVariables,
 	TreasuryProposalPostFragment,
-	useEditPostMutation
-} from '../generated/graphql';
+	useEditPostMutation,
+	useTextileAuthInfoLazyQuery,
+	useTextileAuthInfoQuery } from '../generated/graphql';
 import { NotificationStatus, textileCollection, TextilePost } from '../types';
 import Button from '../ui-components/Button';
 import FilteredError from '../ui-components/FilteredError';
@@ -68,44 +70,52 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 	const [newTitle, setNewTitle] = useState(title || '');
 	const { queueNotification } = useContext(NotificationContext);
 	const {  control, errors, handleSubmit, setValue } = useForm();
+	const { data, loading } = useTextileAuthInfoQuery();
+	const { createPost, findPost, error: errorPost, pending, value, valueFind } = useTextile(data?.textileAuthInfo);
+	console.log('loading getting data',loading);
+	console.log('data', data);
+	const [editPostMutation, { error }] = useEditPostMutation({
+		variables: {
+			content: newContent,
+			id: post.id,
+			title: newTitle
+		}
+	});
+
+	useEffect(() => {
+		if (errorPost) {
+			console.log('errorPost',errorPost);
+		}
+
+		if (pending){
+			console.log('pending',pending);
+		}
+
+		if (value){
+			console.log('value',value.toString());
+		}
+	}, [errorPost, pending, value]);
 
 	const handleCancel = () => {
 		toggleEdit();
 		setNewContent(content || '');
 		setNewTitle(title || '');
 	};
-	const handleSave = async () => {
+
+	const handleSave = useCallback(async () => {
 		toggleEdit();
+		console.log('createPost',createPost);
+		// console.log('findPost',findPost);
 
-		const textileTokenInfo = {
-			'key': 'brf3mvikosuht6syaqjmfaqtnxi',
-			'libp2pIdentity': 'bbaareydwzseqsqvljvsb2h3ct2em7gz7t3edbux2fntas3u7tr7odlo4iml6bvcpfcfmf7lrhu6eadvwlwo4li4caqbts2peu577obgqxx3taf7a2rhsrcwc7vyt2pcab23f3hofuobaiazznhsko77xatil35zq',
-			'msg': '2020-07-14T23:41:40.122Z',
-			'sig': 'bvsapvqxdmst45dh4fm5tpozgckijzbfsc44ic62v4z54k7g5syna',
-			'token': 'eyJhbGciOiJFZDI1NTE5IiwidHlwIjoiSldUIn0.eyJpYXQiOjE1OTQ3NjY1MDEsImlzcyI6ImJiYWFyZWlnd2pvYXd1ZWc1a3ZobWMzNjI3Z3Zja2htZTd6emZlbnVqYXVqcHRodGd6Y21odHRvYTZ1Iiwic3ViIjoiYmJhYXJlaWF4NGRrZTZrZWt5bDZ4Y3BqNGlhaGxteG01eXdyeWViYWRoZnU2amozNzY0Y25icHB4Z2EifQ.vlOinb41Rf5oLMz0QE0gFOra8xIxm7D291UJfj_583CVPYIqBt6ii5S-qEAxFMy9dyoWMkqS3x2NgW-_cxdwAg'
-		};
-		const client = Client.withUserAuth({ ...textileTokenInfo });
-		const user = await Libp2pCryptoIdentity.fromString(textileTokenInfo.libp2pIdentity);
-		await client.getToken(user);
+		createPost([{
+			_id: '',
+			author: author?.username,
+			content: newContent,
+			createdAd: Date.now().toString(),
+			title: newTitle
+		} as TextilePost]);
 
-		if (!process.env.REACT_APP_TEXTILE_THREAD_ID) {
-			console.error('REACT_APP_TEXTILE_THREAD_ID env not defined');
-		}
-
-		const thread = ThreadID.fromString(process.env.REACT_APP_TEXTILE_THREAD_ID || '');
-
-		await client.create(thread, textileCollection.POST, [
-			{
-				_id: '',
-				author: author?.username,
-				content: newContent,
-				createdAd: Date.now().toString(),
-				title: newTitle
-			} as TextilePost
-		] );
-
-		const posts = await client.find(thread, textileCollection.POST, {});
-		console.log('get thread', posts);
+		findPost({});
 
 		editPostMutation( {
 			variables: {
@@ -125,17 +135,16 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 				}
 			})
 			.catch((e) => console.error('Error saving post',e));
-	};
+	}, [author?.username, createPost, editPostMutation, findPost, newContent, newTitle, post.id, queueNotification, refetch, toggleEdit]);
+
+	useEffect(() => {
+		if(valueFind){
+			console.log('valueFind', valueFind);
+		}
+	}, [valueFind]);
 
 	const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>[]) => {setNewTitle(event[0].currentTarget.value); return event[0].currentTarget.value;};
 	const onContentChange = (data: Array<string>) => {setNewContent(data[0]); return data[0].length ? data[0] : null;};
-	const [editPostMutation, { error }] = useEditPostMutation({
-		variables: {
-			content: newContent,
-			id: post.id,
-			title: newTitle
-		}
-	});
 
 	useEffect(() => {
 		if (isEditing) {
@@ -174,7 +183,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 							/>
 							<div className='button-container'>
 								<Button secondary size='small' onClick={handleCancel}><GoX className='icon'/>Cancel</Button>
-								<Button primary size='small' onClick={handleSubmit(handleSave)}><GoCheck className='icon'/>Save</Button>
+								<Button primary size='small' onClick={handleSubmit(() => handleSave())}><GoCheck className='icon'/>Save</Button>
 							</div>
 						</Form>
 						:

@@ -289,7 +289,7 @@ export interface ContextUserId {
     userId: number;
 }
 
-export interface TextileTokenInfo {
+export interface TextileAuthInfo {
     key: string;
     libp2pIdentity: string;
     msg: string;

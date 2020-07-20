@@ -5573,6 +5573,7 @@ export type PublicUser = {
 export type Query = {
   __typename?: 'Query';
   subscription?: Maybe<Subscription>;
+  textileAuthInfo: TextileAuthInfo;
   token?: Maybe<Token>;
   user?: Maybe<User>;
 };
@@ -7064,6 +7065,15 @@ export type String_Comparison_Exp = {
 export type Subscription = {
   __typename?: 'Subscription';
   subscribed?: Maybe<Scalars['Boolean']>;
+};
+
+export type TextileAuthInfo = {
+  __typename?: 'TextileAuthInfo';
+  key: Scalars['String'];
+  libp2pIdentity: Scalars['String'];
+  msg: Scalars['String'];
+  sig: Scalars['String'];
+  token: Scalars['String'];
 };
 
 export type Tip = {
@@ -14786,6 +14796,7 @@ export type Query_Root = {
   stakes: Array<Maybe<Stake>>;
   stakesConnection: StakeConnection;
   subscription?: Maybe<Subscription>;
+  textileAuthInfo: TextileAuthInfo;
   tip?: Maybe<Tip>;
   tipStatus?: Maybe<TipStatus>;
   tipStatuses: Array<Maybe<TipStatus>>;
@@ -16897,6 +16908,17 @@ export type CommentFieldsFragment = (
     { __typename?: 'User' }
     & AuthorFieldsFragment
   )> }
+);
+
+export type TextileAuthInfoQueryVariables = {};
+
+
+export type TextileAuthInfoQuery = (
+  { __typename?: 'query_root' }
+  & { textileAuthInfo: (
+    { __typename?: 'TextileAuthInfo' }
+    & Pick<TextileAuthInfo, 'key' | 'libp2pIdentity' | 'msg' | 'sig' | 'token'>
+  ) }
 );
 
 export type CreatePostMutationVariables = {
@@ -19239,6 +19261,42 @@ export function useGet_Refresh_TokenLazyQuery(baseOptions?: ApolloReactHooks.Laz
 export type Get_Refresh_TokenQueryHookResult = ReturnType<typeof useGet_Refresh_TokenQuery>;
 export type Get_Refresh_TokenLazyQueryHookResult = ReturnType<typeof useGet_Refresh_TokenLazyQuery>;
 export type Get_Refresh_TokenQueryResult = ApolloReactCommon.QueryResult<Get_Refresh_TokenQuery, Get_Refresh_TokenQueryVariables>;
+export const TextileAuthInfoDocument = gql`
+    query TextileAuthInfo {
+  textileAuthInfo {
+    key
+    libp2pIdentity
+    msg
+    sig
+    token
+  }
+}
+    `;
+
+/**
+ * __useTextileAuthInfoQuery__
+ *
+ * To run a query within a React component, call `useTextileAuthInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTextileAuthInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTextileAuthInfoQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTextileAuthInfoQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<TextileAuthInfoQuery, TextileAuthInfoQueryVariables>) {
+        return ApolloReactHooks.useQuery<TextileAuthInfoQuery, TextileAuthInfoQueryVariables>(TextileAuthInfoDocument, baseOptions);
+      }
+export function useTextileAuthInfoLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<TextileAuthInfoQuery, TextileAuthInfoQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<TextileAuthInfoQuery, TextileAuthInfoQueryVariables>(TextileAuthInfoDocument, baseOptions);
+        }
+export type TextileAuthInfoQueryHookResult = ReturnType<typeof useTextileAuthInfoQuery>;
+export type TextileAuthInfoLazyQueryHookResult = ReturnType<typeof useTextileAuthInfoLazyQuery>;
+export type TextileAuthInfoQueryResult = ApolloReactCommon.QueryResult<TextileAuthInfoQuery, TextileAuthInfoQueryVariables>;
 export const CreatePostDocument = gql`
     mutation createPost($userId: Int!, $content: String!, $topicId: Int!, $title: String!) {
   __typename

@@ -9,9 +9,9 @@ import LibP2PIdentity from '../../model/LibP2PIdentity';
 import RefreshToken from '../../model/RefreshToken';
 import { getApiSig } from '../../textileHandlers/getApiSig';
 import { getClientWithKeyInfo } from '../../textileHandlers/getClientWithKeyInfo';
-import { Context, TextileTokenInfo } from '../../types';
+import { Context, TextileAuthInfo } from '../../types';
 
-export default async (_: void, __: void, ctx: Context): Promise<TextileTokenInfo> => {
+export default async (_: void, __: void, ctx: Context): Promise<TextileAuthInfo> => {
 	// const refreshToken = ctx.req.cookies.refresh_token;
 
 	// if (!refreshToken) {
@@ -60,7 +60,7 @@ export default async (_: void, __: void, ctx: Context): Promise<TextileTokenInfo
 	// const user = await Libp2pCryptoIdentity.fromString(identityToUse);
 	// a new token needs to be created on the hub (otherwise it throws)
 	// ? ----> But this token is never used
-	// const textileToken = await client.getToken(user);
+	// const textileAuthInfo = await client.getToken(user);
 	// const client = Client.withUserAuth({ key, msg: apiSig.msg, sig: apiSig.sig, token });
 
 	return { key: process.env.TEXTILE_HUB_KEY || '', libp2pIdentity: identityToUse, msg: apiSig.msg, sig: apiSig.sig, token };
