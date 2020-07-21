@@ -4,9 +4,10 @@
 
 import styled from '@xstyled/styled-components';
 import { ApolloQueryResult } from 'apollo-client';
-import React, { useContext, useEffect,useState } from 'react';
+import React, { useCallback,useContext, useEffect,useState } from 'react';
 import { Controller,useForm } from 'react-hook-form';
 import { GoCheck, GoX } from 'react-icons/go';
+import { useTextile } from 'src/hooks';
 
 import { NotificationContext } from '../context/NotificationContext';
 import { DiscussionPostAndCommentsQuery,
@@ -29,7 +30,7 @@ import { DiscussionPostAndCommentsQuery,
 	TreasuryProposalPostFragment,
 	useEditPostMutation
 } from '../generated/graphql';
-import { NotificationStatus } from '../types';
+import { NotificationStatus, TextilePost } from '../types';
 import Button from '../ui-components/Button';
 import FilteredError from '../ui-components/FilteredError';
 import { Form } from '../ui-components/Form';
@@ -62,18 +63,51 @@ interface Props {
 
 const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus, refetch, toggleEdit }: Props) => {
 	const { author, content, title } = post;
+	const authorName = author?.username;
 	const [newContent, setNewContent] = useState(content || '');
 	const [newTitle, setNewTitle] = useState(title || '');
 	const { queueNotification } = useContext(NotificationContext);
 	const {  control, errors, handleSubmit, setValue } = useForm();
+	const { createPost, errorPost, pendingPost: pending, valuePost: value } = useTextile();
+	const [editPostMutation, { error }] = useEditPostMutation({
+		variables: {
+			content: newContent,
+			id: post.id,
+			title: newTitle
+		}
+	});
+
+	useEffect(() => {
+		if (errorPost) {
+			console.log('errorPost',errorPost);
+		}
+
+		if (pending){
+			console.log('pending',pending);
+		}
+
+		if (value){
+			console.log('value',value.toString());
+		}
+	}, [errorPost, pending, value]);
 
 	const handleCancel = () => {
 		toggleEdit();
 		setNewContent(content || '');
 		setNewTitle(title || '');
 	};
-	const handleSave = () => {
+
+	const handleSave = useCallback(async () => {
 		toggleEdit();
+
+		createPost([{
+			_id: '',
+			author: authorName,
+			content: newContent,
+			createdAd: Date.now().toString(),
+			title: newTitle
+		} as TextilePost]);
+
 		editPostMutation( {
 			variables: {
 				content: newContent,
@@ -92,17 +126,10 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 				}
 			})
 			.catch((e) => console.error('Error saving post',e));
-	};
+	}, [authorName, createPost, editPostMutation, newContent, newTitle, post.id, queueNotification, refetch, toggleEdit]);
 
 	const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>[]) => {setNewTitle(event[0].currentTarget.value); return event[0].currentTarget.value;};
 	const onContentChange = (data: Array<string>) => {setNewContent(data[0]); return data[0].length ? data[0] : null;};
-	const [editPostMutation, { error }] = useEditPostMutation({
-		variables: {
-			content: newContent,
-			id: post.id,
-			title: newTitle
-		}
-	});
 
 	useEffect(() => {
 		if (isEditing) {
@@ -111,7 +138,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 		}
 	},[content, isEditing, setValue, title]);
 
-	if (!author || !author.username || !content) return <div>Post content or author could not be found.</div>;
+	if (!authorName || !content) return <div>Post content or author could not be found.</div>;
 
 	return (
 		<>
@@ -141,7 +168,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 							/>
 							<div className='button-container'>
 								<Button secondary size='small' onClick={handleCancel}><GoX className='icon'/>Cancel</Button>
-								<Button primary size='small' onClick={handleSubmit(handleSave)}><GoCheck className='icon'/>Save</Button>
+								<Button primary size='small' onClick={handleSubmit(() => handleSave())}><GoCheck className='icon'/>Save</Button>
 							</div>
 						</Form>
 						:

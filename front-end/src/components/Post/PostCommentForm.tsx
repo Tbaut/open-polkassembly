@@ -4,12 +4,15 @@
 
 import styled from '@xstyled/styled-components';
 import { ApolloQueryResult } from 'apollo-client';
-import React, { useContext,useState } from 'react';
+import React, { useCallback,useContext,useEffect, useState } from 'react';
 import { Controller,useForm } from 'react-hook-form';
 import { GoReply } from 'react-icons/go';
+import { useTextile } from 'src/hooks';
+import { TextileComment } from 'src/types';
 
 import { UserDetailsContext } from '../../context/UserDetailsContext';
 import {
+	AddPostCommentMutation,
 	DiscussionPostAndCommentsQuery,
 	DiscussionPostAndCommentsQueryVariables,
 	MotionPostAndCommentsQuery,
@@ -51,17 +54,18 @@ interface Props {
 
 const PostCommentForm = ({ className, postId, refetch }: Props) => {
 	const { id, notification, username } = useContext(UserDetailsContext);
+	const postParticipated = notification?.postParticipated;
 	const [content, setContent] = useState('');
 	const { control, errors, handleSubmit, setValue } = useForm();
 
 	const onContentChange = (data: Array<string>) => {setContent(data[0]); return data[0].length ? data[0] : null;};
 	const [addPostCommentMutation, { error }] = useAddPostCommentMutation();
 	const [postSubscribeMutation] = usePostSubscribeMutation();
+	const { createComment, errorComment, valueComment } = useTextile();
+	const [data, setDataComment] = useState<AddPostCommentMutation | undefined>(undefined);
 
-	if (!id) return <div>You must log in to comment.</div>;
-
-	const createSubscription = (postId: number) => {
-		if (!notification?.postParticipated) {
+	const createSubscription = useCallback((postId: number) => {
+		if (!postParticipated) {
 			return;
 		}
 
@@ -76,9 +80,35 @@ const PostCommentForm = ({ className, postId, refetch }: Props) => {
 				}
 			})
 			.catch((e) => console.error('Error subscribing to post',e));
-	};
+	}, [postParticipated, postSubscribeMutation]);
+
+	useEffect(() => {
+		if (errorComment){
+			console.error('errorComment', errorComment);
+		}
+	},[errorComment]);
+
+	useEffect(() => {
+		if (data && valueComment){
+			console.log('valueComment',valueComment[0]);
+			setContent('');
+			setValue('content', '');
+			refetch();
+			createSubscription(postId);
+		}
+	},[createSubscription, data, postId, refetch, setValue, valueComment]);
 
 	const handleSave = () => {
+		if (!id) return;
+
+		createComment([{
+			_id: '',
+			author: username,
+			content,
+			createdAd: Date.now().toString(),
+			postId: postId.toString()
+		} as TextileComment]);
+
 		addPostCommentMutation( {
 			variables: {
 				authorId: id,
@@ -88,16 +118,15 @@ const PostCommentForm = ({ className, postId, refetch }: Props) => {
 		)
 			.then(({ data }) => {
 				if (data && data.insert_comments && data.insert_comments.affected_rows > 0) {
-					setContent('');
-					setValue('content', '');
-					refetch();
-					createSubscription(postId);
+					setDataComment(data);
 				} else {
 					throw new Error('No data returned from the saving comment query');
 				}
 			})
 			.catch((e) => console.error('Error saving comment',e));
 	};
+
+	if (!id) return <div>You must log in to comment.</div>;
 
 	return (
 		<div className={className}>

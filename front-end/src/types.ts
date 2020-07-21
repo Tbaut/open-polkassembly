@@ -155,3 +155,25 @@ export interface ReactionMapFields {
 	count: number
 	userNames: string[]
 }
+
+export interface TextilePost {
+	_id: string;
+	title: string;
+	content: string;
+	author: string;
+	createdAd: string;
+ }
+
+export interface TextileComment {
+	_id: string;
+	postId: string;
+	title: string;
+	content: string;
+	author: string;
+	createdAd: string;
+}
+
+export enum textileCollection {
+	POST = 'post',
+	COMMENT = 'comment',
+}
