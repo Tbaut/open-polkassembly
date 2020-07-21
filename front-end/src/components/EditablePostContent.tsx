@@ -67,7 +67,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 	const [newTitle, setNewTitle] = useState(title || '');
 	const { queueNotification } = useContext(NotificationContext);
 	const {  control, errors, handleSubmit, setValue } = useForm();
-	const { createPost, findPost, error: errorPost, pending, value, valueFind } = useTextile();
+	const { createPost, errorPost: errorPost, pendingPost: pending, valuePost: value } = useTextile();
 	const [editPostMutation, { error }] = useEditPostMutation({
 		variables: {
 			content: newContent,
@@ -98,8 +98,6 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 
 	const handleSave = useCallback(async () => {
 		toggleEdit();
-		console.log('createPost',createPost);
-		// console.log('findPost',findPost);
 
 		createPost([{
 			_id: '',
@@ -108,8 +106,6 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 			createdAd: Date.now().toString(),
 			title: newTitle
 		} as TextilePost]);
-
-		findPost({});
 
 		editPostMutation( {
 			variables: {
@@ -129,13 +125,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 				}
 			})
 			.catch((e) => console.error('Error saving post',e));
-	}, [author?.username, createPost, editPostMutation, findPost, newContent, newTitle, post.id, queueNotification, refetch, toggleEdit]);
-
-	useEffect(() => {
-		if(valueFind){
-			console.log('valueFind', valueFind);
-		}
-	}, [valueFind]);
+	}, [author?.username, createPost, editPostMutation, newContent, newTitle, post.id, queueNotification, refetch, toggleEdit]);
 
 	const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>[]) => {setNewTitle(event[0].currentTarget.value); return event[0].currentTarget.value;};
 	const onContentChange = (data: Array<string>) => {setNewContent(data[0]); return data[0].length ? data[0] : null;};

@@ -19,6 +19,7 @@ import Button from '../../ui-components/Button';
 import FilteredError from '../../ui-components/FilteredError';
 import { Form } from '../../ui-components/Form';
 import TopicsRadio from './TopicsRadio';
+import value from '*.png';
 
 interface Props {
 	className?: string
@@ -44,7 +45,7 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 	const [postSubscribeMutation] = usePostSubscribeMutation();
 	const [isSending, setIsSending] = useState(false);
 	const { history } = useRouter();
-	const { createPost, findPost, error: errorPost, valueFind } = useTextile();
+	const { createPost, errorPost, valuePost } = useTextile();
 
 	const createSubscription = useCallback((postId: number | undefined) => {
 		if (!currentUser.email_verified) {
@@ -105,17 +106,6 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 		if (currentUser.id && title && content && selectedTopic){
 			setIsSending(true);
 			setIsIPFSSending(true);
-			console.log('createPost',createPost);
-
-			createPost([{
-				_id: '',
-				author: currentUser.username,
-				content,
-				createdAd: Date.now().toString(),
-				title
-			} as TextilePost]);
-
-			findPost({});
 
 			createPostMutation({ variables: {
 				content,
@@ -124,6 +114,13 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 				userId: currentUser.id
 			} }).then(({ data }) => {
 				if (data?.insert_posts?.affected_rows && data?.insert_posts?.affected_rows > 0 && data?.insert_posts?.returning?.length && data?.insert_posts?.returning?.[0]?.id) {
+					createPost([{
+						_id: `${data.insert_posts.returning[0].id}`,
+						author: currentUser.username,
+						content,
+						createdAd: Date.now().toString(),
+						title
+					} as TextilePost]);
 					setDataPostCreation(data);
 				} else {
 					throw Error('Error in post creation');
@@ -143,10 +140,11 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 			return;
 		}
 
-		if (isIPFSSending){
+		if(!valuePost){
 			return;
 		}
 
+		setIsIPFSSending(false);
 		const postId = dataPostCreation.insert_posts?.returning?.[0]?.id;
 		queueNotification({
 			header: 'Thanks for sharing!',
@@ -157,18 +155,13 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 		createSubscription(postId);
 		createPoll(postId);
 		history.push(`/post/${postId}`);
-	},[createPoll, createSubscription, dataPostCreation, history, isIPFSSending, queueNotification]);
+	},[createPoll, createSubscription, dataPostCreation, history, isIPFSSending, queueNotification, valuePost]);
 
 	useEffect(() => {
 		if (errorPost){
 			console.error('ErrorPost', errorPost);
 		}
-
-		if (valueFind){
-			console.log('valueFind', valueFind);
-			setIsIPFSSending(false);
-		}
-	},[errorPost, valueFind]);
+	},[errorPost]);
 
 	return (
 		<Grid>
