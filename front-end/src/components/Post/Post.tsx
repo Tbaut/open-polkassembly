@@ -207,7 +207,7 @@ const Post = ( { className, data, isMotion = false, isProposal = false, isRefere
 		<Grid className={className}>
 			<Grid.Column mobile={16} tablet={16} computer={10} largeScreen={10}>
 				<div className='post_content'>
-					<TextileStatus id={post.id} content={post.content} comments={post.comments} />
+					<TextileStatus author={post.author?.username} id={post.id} content={post.content} comments={post.comments} title={post.title} />
 					<EditablePostContent
 						isEditing={isEditing}
 						onchainId={onchainId}

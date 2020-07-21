@@ -132,7 +132,6 @@ export const useTextile = () => {
 	},[client, thread]);
 
 	return {
-		client,
 		createComment,
 		createPost,
 		errorComment,
@@ -145,7 +144,6 @@ export const useTextile = () => {
 		pendingFind,
 		pendingFindComment,
 		pendingPost,
-		threadId,
 		valueComment,
 		valueFind,
 		valueFindComment,
