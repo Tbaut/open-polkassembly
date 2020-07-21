@@ -4,7 +4,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Client, ThreadID } from '@textile/hub';
 import { Libp2pCryptoIdentity } from '@textile/threads-core';
-import { useCallback,useEffect, useState } from 'react';
+import { useCallback,useEffect, useMemo,useState } from 'react';
 import { useTextileAuthInfoLazyQuery } from 'src/generated/graphql';
 import { textileCollection,TextileComment,TextilePost } from 'src/types';
 
@@ -36,13 +36,17 @@ export const useTextile = () => {
 	const [errorFindComment, setErrorFindComment] = useState<Error | null>(null);
 
 	const threadId = process.env.REACT_APP_TEXTILE_THREAD_ID;
-	const thread = ThreadID.fromString(threadId || '');
+	const thread = useMemo(() => {
+		return ThreadID.fromString(threadId || '');
+	}
+	,[threadId]
+	);
 	const [getAuthInfo, { data }] = useTextileAuthInfoLazyQuery();
 	const { textileAuthInfo } = data || {};
 
 	useEffect(() => {
 		if (!textileAuthInfo){
-			console.log('--> no auth info, calling getAuthInfo');
+			console.log('--> no auth info yet, calling getAuthInfo');
 			getAuthInfo();
 			return;
 		}
@@ -97,13 +101,14 @@ export const useTextile = () => {
 	}, [client, thread]);
 
 	const findPost = useCallback((query: any) => {
+		console.log('--> findPost');
 		if (!client){
 			return null;
 		}
 
-		setPendingFindComment(true);
-		setValueFindComment(null);
-		setErrorFindComment(null);
+		setPendingFind(true);
+		setValueFind(null);
+		setErrorFind(null);
 
 		client.find(thread, textileCollection.POST, query)
 			.then(response => setValueFind(response))
@@ -127,6 +132,7 @@ export const useTextile = () => {
 	},[client, thread]);
 
 	return {
+		client,
 		createComment,
 		createPost,
 		errorComment,
@@ -139,6 +145,7 @@ export const useTextile = () => {
 		pendingFind,
 		pendingFindComment,
 		pendingPost,
+		threadId,
 		valueComment,
 		valueFind,
 		valueFindComment,
