@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import styled from '@xstyled/styled-components';
-import React, { useContext, useEffect,useState, useCallback } from 'react';
+import React, { useCallback,useContext, useEffect,useState } from 'react';
 import { Controller,useForm } from 'react-hook-form';
 import { Checkbox, CheckboxProps, Grid } from 'semantic-ui-react';
 import useCurrentBlock from 'src/hooks/useCurrentBlock';
@@ -12,14 +12,13 @@ import ContentForm from '../../components/ContentForm';
 import TitleForm from '../../components/TitleForm';
 import { NotificationContext } from '../../context/NotificationContext';
 import { UserDetailsContext } from '../../context/UserDetailsContext';
-import { useCreatePollMutation, useCreatePostMutation, usePostSubscribeMutation, CreatePostMutation } from '../../generated/graphql';
+import { CreatePostMutation,useCreatePollMutation, useCreatePostMutation, usePostSubscribeMutation } from '../../generated/graphql';
 import { useBlockTime, useRouter, useTextile } from '../../hooks';
 import { NotificationStatus, TextilePost } from '../../types';
 import Button from '../../ui-components/Button';
 import FilteredError from '../../ui-components/FilteredError';
 import { Form } from '../../ui-components/Form';
 import TopicsRadio from './TopicsRadio';
-import value from '*.png';
 
 interface Props {
 	className?: string
@@ -37,7 +36,7 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 	const { control, errors, handleSubmit } = useForm();
 	const { blocktime } = useBlockTime();
 	const [isIPFSSending, setIsIPFSSending] = useState(false);
-	const [dataPostCreation, setDataPostCreation] = useState<CreatePostMutation | undefined>(undefined)
+	const [dataPostCreation, setDataPostCreation] = useState<CreatePostMutation | undefined>(undefined);
 
 	const currenBlockNumber = useCurrentBlock()?.toNumber();
 	const [createPostMutation, { loading, error }] = useCreatePostMutation();
@@ -71,7 +70,7 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 				}
 			})
 			.catch((e) => console.error('Error subscribing to post',e));
-	}, [postSubscribeMutation]);
+	}, [currentUser, postSubscribeMutation]);
 
 	const createPoll = useCallback((postId: number | undefined) => {
 		if (!hasPoll) {
@@ -100,7 +99,7 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 			}
 		})
 			.catch((e) => console.error('Error subscribing to post', e));
-	}, [queueNotification, createPollMutation]);
+	}, [hasPoll, currenBlockNumber, blocktime, createPollMutation, queueNotification]);
 
 	const handleSend = () => {
 		if (currentUser.id && title && content && selectedTopic){
@@ -205,11 +204,11 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 							type='submit'
 						>
 							{
-								isSending || loading 
-								? 'Creating...'
-								: isIPFSSending 
-									? 'Sending to IPFS...'
-									: 'Create'
+								isSending || loading
+									? 'Creating...'
+									: isIPFSSending
+										? 'Sending to IPFS...'
+										: 'Create'
 							}
 						</Button>
 					</div>

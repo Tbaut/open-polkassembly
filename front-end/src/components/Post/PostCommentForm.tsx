@@ -54,6 +54,7 @@ interface Props {
 
 const PostCommentForm = ({ className, postId, refetch }: Props) => {
 	const { id, notification, username } = useContext(UserDetailsContext);
+	const postParticipated = notification?.postParticipated;
 	const [content, setContent] = useState('');
 	const { control, errors, handleSubmit, setValue } = useForm();
 
@@ -64,7 +65,7 @@ const PostCommentForm = ({ className, postId, refetch }: Props) => {
 	const [data, setDataComment] = useState<AddPostCommentMutation | undefined>(undefined);
 
 	const createSubscription = useCallback((postId: number) => {
-		if (!notification?.postParticipated) {
+		if (!postParticipated) {
 			return;
 		}
 
@@ -79,7 +80,7 @@ const PostCommentForm = ({ className, postId, refetch }: Props) => {
 				}
 			})
 			.catch((e) => console.error('Error subscribing to post',e));
-	}, [notification?.postParticipated, postSubscribeMutation]);
+	}, [postParticipated, postSubscribeMutation]);
 
 	useEffect(() => {
 		if (errorComment){

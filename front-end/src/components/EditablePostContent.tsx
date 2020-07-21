@@ -63,11 +63,12 @@ interface Props {
 
 const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus, refetch, toggleEdit }: Props) => {
 	const { author, content, title } = post;
+	const authorName = author?.username;
 	const [newContent, setNewContent] = useState(content || '');
 	const [newTitle, setNewTitle] = useState(title || '');
 	const { queueNotification } = useContext(NotificationContext);
 	const {  control, errors, handleSubmit, setValue } = useForm();
-	const { createPost, errorPost: errorPost, pendingPost: pending, valuePost: value } = useTextile();
+	const { createPost, errorPost, pendingPost: pending, valuePost: value } = useTextile();
 	const [editPostMutation, { error }] = useEditPostMutation({
 		variables: {
 			content: newContent,
@@ -101,7 +102,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 
 		createPost([{
 			_id: '',
-			author: author?.username,
+			author: authorName,
 			content: newContent,
 			createdAd: Date.now().toString(),
 			title: newTitle
@@ -125,7 +126,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 				}
 			})
 			.catch((e) => console.error('Error saving post',e));
-	}, [author?.username, createPost, editPostMutation, newContent, newTitle, post.id, queueNotification, refetch, toggleEdit]);
+	}, [authorName, createPost, editPostMutation, newContent, newTitle, post.id, queueNotification, refetch, toggleEdit]);
 
 	const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>[]) => {setNewTitle(event[0].currentTarget.value); return event[0].currentTarget.value;};
 	const onContentChange = (data: Array<string>) => {setNewContent(data[0]); return data[0].length ? data[0] : null;};
@@ -137,7 +138,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 		}
 	},[content, isEditing, setValue, title]);
 
-	if (!author || !author.username || !content) return <div>Post content or author could not be found.</div>;
+	if (!authorName || !content) return <div>Post content or author could not be found.</div>;
 
 	return (
 		<>

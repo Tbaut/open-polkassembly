@@ -41,12 +41,11 @@ const DivContent = styled.div`
 	color: black_text;
 `;
 
-const TextileStatus = ({ author, className, comments, content, id, title } : Props) => {
+const TextileStatus = ({ author, className, content, id, title } : Props) => {
 	const [isValid, setIsValid] = useState<boolean | null>(null);
-	const { findPost, pendingFind, errorFind, valueFind } = useTextile();
+	const { findPost, errorFind, valueFind } = useTextile();
 	const [popupText, setPopupText] = useState('Verifying content on IPFS...');
 
-	console.log('isValid', isValid);
 	useEffect(() => {
 		findPost(new Where('_id').eq(id.toString()));
 	}, [findPost, id]);
