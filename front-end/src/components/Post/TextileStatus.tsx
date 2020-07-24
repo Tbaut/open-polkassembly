@@ -7,7 +7,7 @@ import styled from '@xstyled/styled-components';
 import React, { useEffect, useState } from 'react';
 import { Popup } from 'semantic-ui-react';
 import { CommentFieldsFragment } from 'src/generated/graphql';
-import { useTextileFindPost } from 'src/hooks';
+import { useTextileFindPosts } from 'src/hooks';
 
 interface Props{
 	author?: string | null;
@@ -43,7 +43,7 @@ const DivContent = styled.div`
 
 const TextileStatus = ({ author, className, content, id, title } : Props) => {
 	const [isValid, setIsValid] = useState<boolean | null>(null);
-	const [findPost, { data, error }] = useTextileFindPost();
+	const [findPost, { data, error }] = useTextileFindPosts();
 	const [popupText, setPopupText] = useState('Verifying content on IPFS...');
 
 	useEffect(() => {

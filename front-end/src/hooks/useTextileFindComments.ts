@@ -7,7 +7,7 @@ import { textileCollection } from 'src/types';
 
 import { useTextile } from './useTextile';
 
-export const useTextileFindComment = (): [(query: any) => void, {
+export const useTextileFindComments = (): [(query: any) => void, {
     data: any;
     error: Error | null;
     loading: boolean;
@@ -19,8 +19,8 @@ export const useTextileFindComment = (): [(query: any) => void, {
 	const [data, setData] = useState<any | null>(null);
 	const [error, setError] = useState<Error | null>(null);
 
-	const findComment = useCallback((query: any): void => {
-		console.log('--> findPost');
+	const findComments = useCallback((query: any): void => {
+		console.log('--> findComments');
 		if (!client){
 			return;
 		}
@@ -36,7 +36,7 @@ export const useTextileFindComment = (): [(query: any) => void, {
 	},[client, thread]);
 
 	return [
-		findComment,
+		findComments,
 		{
 			data,
 			error,

@@ -6,5 +6,5 @@ export { default as useRouter } from './useRouter';
 export { default as useRedirectGovernancePost } from './useRedirectGovernancePost';
 export { default as useBlockTime } from './useBlockTime';
 export { useTextile } from './useTextile';
-export { useTextileFindComment } from './useTextileFindComment';
-export { useTextileFindPost } from './useTextileFindPost';
+export { useTextileFindComments } from './useTextileFindComments';
+export { useTextileFindPosts } from './useTextileFindPosts';
