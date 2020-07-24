@@ -7,7 +7,7 @@ import styled from '@xstyled/styled-components';
 import React, { useEffect, useState } from 'react';
 import { Popup } from 'semantic-ui-react';
 import { CommentFieldsFragment } from 'src/generated/graphql';
-import { useTextile } from 'src/hooks';
+import { useTextileFindPost } from 'src/hooks';
 
 interface Props{
 	author?: string | null;
@@ -43,7 +43,7 @@ const DivContent = styled.div`
 
 const TextileStatus = ({ author, className, content, id, title } : Props) => {
 	const [isValid, setIsValid] = useState<boolean | null>(null);
-	const { findPost, errorFind, valueFind } = useTextile();
+	const [findPost, { data, error }] = useTextileFindPost();
 	const [popupText, setPopupText] = useState('Verifying content on IPFS...');
 
 	useEffect(() => {
@@ -51,16 +51,16 @@ const TextileStatus = ({ author, className, content, id, title } : Props) => {
 	}, [findPost, id]);
 
 	useEffect(() => {
-		if(errorFind){
-			console.error('errorFind', errorFind);
+		if(error){
+			console.error('error', error);
 		}
-	}, [errorFind]);
+	}, [error]);
 
 	useEffect(() => {
-		console.log('valueFind',valueFind);
+		console.log('data',data);
 
-		if (valueFind?.instancesList.length){
-			const { content: textileContent, title: textileTitle, author: textileAuthor } = valueFind.instancesList[0];
+		if (data?.instancesList.length){
+			const { content: textileContent, title: textileTitle, author: textileAuthor } = data.instancesList[0];
 
 			if (content !== textileContent){
 				setPopupText('Post content donot match between this page and what is stored on IPFS. This page should not be trusted.');
@@ -80,7 +80,12 @@ const TextileStatus = ({ author, className, content, id, title } : Props) => {
 			}
 		}
 
-	}, [author, content, title, valueFind]);
+		if (data?.instancesList.length === 0){
+			setPopupText('No data corresponding to this id could be found on IPFS. This page should not be trusted.');
+			setIsValid(false);
+		}
+
+	}, [author, data, content, title]);
 
 	return (
 		<div className={className}>

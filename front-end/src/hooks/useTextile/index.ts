@@ -27,14 +27,6 @@ export const useTextile = () => {
 	const [errorPost, setErrorPost] = useState<Error | null>(null);
 	const [client, setClient] = useState<Client | null>(null);
 
-	const [pendingFind, setPendingFind] = useState(false);
-	const [valueFind, setValueFind] = useState<any | null>(null);
-	const [errorFind, setErrorFind] = useState<Error | null>(null);
-
-	const [pendingFindComment, setPendingFindComment] = useState(false);
-	const [valueFindComment, setValueFindComment] = useState<any | null>(null);
-	const [errorFindComment, setErrorFindComment] = useState<Error | null>(null);
-
 	const threadId = process.env.REACT_APP_TEXTILE_THREAD_ID;
 	const thread = useMemo(() => {
 		return ThreadID.fromString(threadId || '');
@@ -100,53 +92,16 @@ export const useTextile = () => {
 			.finally(() => setPendingComment(false));
 	}, [client, thread]);
 
-	const findPost = useCallback((query: any) => {
-		console.log('--> findPost');
-		if (!client){
-			return null;
-		}
-
-		setPendingFind(true);
-		setValueFind(null);
-		setErrorFind(null);
-
-		client.find(thread, textileCollection.POST, query)
-			.then(response => setValueFind(response))
-			.catch(error => setErrorFind(error))
-			.finally(() => setPendingFind(false));
-	},[client, thread]);
-
-	const findComment = useCallback((query: any) => {
-		if (!client){
-			return null;
-		}
-
-		setPendingFindComment(true);
-		setValueFindComment(null);
-		setErrorFindComment(null);
-
-		client.find(thread, textileCollection.COMMENT, query)
-			.then(response => setValueFindComment(response))
-			.catch(error => setErrorFindComment(error))
-			.finally(() => setPendingFindComment(false));
-	},[client, thread]);
-
 	return {
+		client,
 		createComment,
 		createPost,
 		errorComment,
-		errorFind,
-		errorFindComment,
 		errorPost,
-		findComment,
-		findPost,
 		pendingComment,
-		pendingFind,
-		pendingFindComment,
 		pendingPost,
+		thread,
 		valueComment,
-		valueFind,
-		valueFindComment,
 		valuePost
 	};
 };
