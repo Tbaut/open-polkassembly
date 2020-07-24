@@ -20,7 +20,6 @@ export const useTextileFindComments = (): [(query: any) => void, {
 	const [error, setError] = useState<Error | null>(null);
 
 	const findComments = useCallback((query: any): void => {
-		console.log('--> findComments');
 		if (!client){
 			return;
 		}

@@ -7,7 +7,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import React, { useCallback,useContext, useEffect,useState } from 'react';
 import { Controller,useForm } from 'react-hook-form';
 import { GoCheck, GoX } from 'react-icons/go';
-import { useTextile } from 'src/hooks';
+import { useTextileEditPost } from 'src/hooks/useTextileEditPost';
 
 import { NotificationContext } from '../context/NotificationContext';
 import { DiscussionPostAndCommentsQuery,
@@ -68,7 +68,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 	const [newTitle, setNewTitle] = useState(title || '');
 	const { queueNotification } = useContext(NotificationContext);
 	const {  control, errors, handleSubmit, setValue } = useForm();
-	const { createPost, errorPost, pendingPost: pending, valuePost: value } = useTextile();
+	const [ editPost, { data: dataEdit, error: errorEdit } ] = useTextileEditPost();
 	const [editPostMutation, { error }] = useEditPostMutation({
 		variables: {
 			content: newContent,
@@ -78,18 +78,14 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 	});
 
 	useEffect(() => {
-		if (errorPost) {
-			console.log('errorPost',errorPost);
+		if (errorEdit) {
+			console.log('errorEdit',errorEdit);
 		}
 
-		if (pending){
-			console.log('pending',pending);
+		if (dataEdit){
+			console.log('dataEdit',dataEdit.toString());
 		}
-
-		if (value){
-			console.log('value',value.toString());
-		}
-	}, [errorPost, pending, value]);
+	}, [dataEdit, errorEdit]);
 
 	const handleCancel = () => {
 		toggleEdit();
@@ -100,13 +96,14 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 	const handleSave = useCallback(async () => {
 		toggleEdit();
 
-		createPost([{
-			_id: '',
+		editPost([{
+			_id: `${post.id}`,
 			author: authorName,
 			content: newContent,
 			createdAd: Date.now().toString(),
 			title: newTitle
-		} as TextilePost]);
+		} as TextilePost],
+		`${post.id}`);
 
 		editPostMutation( {
 			variables: {
@@ -126,7 +123,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 				}
 			})
 			.catch((e) => console.error('Error saving post',e));
-	}, [authorName, createPost, editPostMutation, newContent, newTitle, post.id, queueNotification, refetch, toggleEdit]);
+	}, [authorName, editPost, editPostMutation, newContent, newTitle, post.id, queueNotification, refetch, toggleEdit]);
 
 	const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>[]) => {setNewTitle(event[0].currentTarget.value); return event[0].currentTarget.value;};
 	const onContentChange = (data: Array<string>) => {setNewContent(data[0]); return data[0].length ? data[0] : null;};

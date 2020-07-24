@@ -49,10 +49,12 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 	const [popupText, setPopupText] = useState('Verifying content on IPFS...');
 
 	useEffect(() => {
+		setIsValidPost(null);
 		findPosts(new Where('_id').eq(id.toString()));
-	}, [findPosts, id]);
+	}, [findPosts, id, content]);
 
 	useEffect(() => {
+		setIsValidComments(null);
 		findComments(new Where('postId').eq(id.toString()));
 	}, [findComments, id, comments]);
 
@@ -74,15 +76,15 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 
 			if (content !== textileContent){
 				setPopupText('Post content donot match between this page and what is stored on IPFS. This page should not be trusted.');
-				console.error(`Content donnot match! ${content} !== ${textileContent}`);
+				console.error(`Post content doesnot match! ${content} !== ${textileContent}`);
 				setIsValidPost(false);
 			} else if (title !== textileTitle){
 				setPopupText('Post title donot match between this page and what is stored on IPFS. This page should not be trusted.');
-				console.error(`Title donot match! ${title} !== ${textileTitle}`);
+				console.error(`Title doesnot match! ${title} !== ${textileTitle}`);
 				setIsValidPost(false);
 			} else if (author !== textileAuthor){
 				setPopupText('Post author donot match between this page and what is stored on IPFS. This page should not be trusted.');
-				console.error(`Author donot match! ${author} !== ${textileAuthor}`);
+				console.error(`Post author doesnot match! ${author} !== ${textileAuthor}`);
 				setIsValidPost(false);
 			} else {
 				setPopupText('The content on this page matches with the one stored on IPFS!');
@@ -104,9 +106,6 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 			comments.forEach(({ author, content }, index) => {
 				const { author: IPFSAuthor, content: IPFSContent } = dataComments?.instancesList[index] || {};
 				const username = author?.username;
-
-				console.log('username !== IPFSAuthor',username, IPFSAuthor);
-				console.log('content !== IPFSContent', content, IPFSContent);
 
 				if(username !== IPFSAuthor){
 					setPopupText('Author in comments donot match between this page and what is stored on IPFS. This page should not be trusted.');
