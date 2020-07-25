@@ -117,8 +117,9 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 						_id: `${data.insert_posts.returning[0].id}`,
 						author: currentUser.username,
 						content,
-						createdAd: Date.now().toString(),
-						title
+						createdAt: Date.now().toString(),
+						title,
+						updatedAt: Date.now().toString()
 					} as TextilePost]);
 					setDataPostCreation(data);
 				} else {

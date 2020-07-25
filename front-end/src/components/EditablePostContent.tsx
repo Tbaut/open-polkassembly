@@ -100,8 +100,8 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 			_id: `${post.id}`,
 			author: authorName,
 			content: newContent,
-			createdAd: Date.now().toString(),
-			title: newTitle
+			title: newTitle,
+			updatedAt: Date.now().toString()
 		} as TextilePost]);
 
 		editPostMutation( {

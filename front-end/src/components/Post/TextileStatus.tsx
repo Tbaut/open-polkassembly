@@ -94,7 +94,7 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 
 		if (dataPosts?.instancesList.length === 0){
 			setPopupText('No data corresponding to this id could be found on IPFS. This page should not be trusted.');
-			setIsValidPost(true);
+			setIsValidPost(false);
 		}
 
 	}, [author, dataPosts, content, title]);
@@ -122,9 +122,13 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 			});
 		}
 
-		if (dataComments?.instancesList.length === 0){
+		if (dataComments?.instancesList.length === 0 && comments?.length === 0){
+			setPopupText('The content on this page matches with the one stored on IPFS!');
+			setIsValidComments(true);
+		// in case there's no comment found on IPFS
+		} else if (dataComments?.instancesList.length === 0){
 			setPopupText('No data corresponding to this id could be found on IPFS. This page should not be trusted.');
-			setIsValidPost(true);
+			setIsValidComments(false);
 		}
 
 	}, [dataComments, comments]);

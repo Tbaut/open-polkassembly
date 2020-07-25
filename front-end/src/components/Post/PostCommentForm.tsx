@@ -101,14 +101,6 @@ const PostCommentForm = ({ className, postId, refetch }: Props) => {
 	const handleSave = () => {
 		if (!id) return;
 
-		createComment([{
-			_id: '',
-			author: username,
-			content,
-			createdAd: Date.now().toString(),
-			postId: postId.toString()
-		} as TextileComment]);
-
 		addPostCommentMutation( {
 			variables: {
 				authorId: id,
@@ -117,7 +109,15 @@ const PostCommentForm = ({ className, postId, refetch }: Props) => {
 			} }
 		)
 			.then(({ data }) => {
-				if (data && data.insert_comments && data.insert_comments.affected_rows > 0) {
+				if (data && data.insert_comments && data.insert_comments.affected_rows > 0 && data.insert_comments.returning.length) {
+					createComment([{
+						_id: `${data.insert_comments.returning[0].id}`,
+						author: username,
+						content,
+						createdAt: Date.now().toString(),
+						postId: postId.toString(),
+						updatedAt: Date.now().toString()
+					} as TextileComment]);
 					setDataComment(data);
 				} else {
 					throw new Error('No data returned from the saving comment query');

@@ -77,7 +77,7 @@ export const useTextile = () => {
 	}, [client, thread]);
 
 	const createComment = useCallback((comment: TextileComment[]) => {
-
+		console.log('creating comment', comment);
 		if (!client){
 			return null;
 		}

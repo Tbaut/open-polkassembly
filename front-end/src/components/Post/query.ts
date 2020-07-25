@@ -17,6 +17,9 @@ export const ADD_POST_COMMENT=gql`
         __typename
         insert_comments(objects: {author_id: $authorId, content:  $content, post_id: $postId}) {
             affected_rows
+            returning {
+                id
+            }
         }
     }
 `;

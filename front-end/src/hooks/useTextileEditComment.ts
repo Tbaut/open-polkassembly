@@ -3,11 +3,11 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { useCallback, useState } from 'react';
-import { textileCollection, TextileComment } from 'src/types';
+import { textileCollection } from 'src/types';
 
 import { useTextile } from './useTextile';
 
-export const useTextileEditComment = (): [(comment: TextileComment[]) => void, {
+export const useTextileEditComment = (): [(comment: Record<string, string>, id: string) => void, {
     data: any;
     error: Error | null;
     loading: boolean;
@@ -18,7 +18,7 @@ export const useTextileEditComment = (): [(comment: TextileComment[]) => void, {
 	const [data, setData] = useState<any | null>(null);
 	const [error, setError] = useState<Error | null>(null);
 
-	const editComment = useCallback((comment: TextileComment[]) => {
+	const editComment = useCallback((comment: Record<string, string>, id: string) => {
 		if (!client){
 			return;
 		}
@@ -27,10 +27,12 @@ export const useTextileEditComment = (): [(comment: TextileComment[]) => void, {
 		setData(null);
 		setError(null);
 
-		client.save(thread, textileCollection.COMMENT, comment)
-			.then(response => setData(response))
-			.catch(error => setError(error))
-			.finally(() => setLoading(false));
+		client.findByID(thread, textileCollection.COMMENT, id).then((previousComment) => {
+			client.save(thread, textileCollection.COMMENT, [{ ...previousComment.instance, ...comment }])
+				.then(response => setData(response))
+				.catch(error => setError(error))
+				.finally(() => setLoading(false));
+		}).catch(error => setError(error));
 	},[client, thread]);
 
 	return [
