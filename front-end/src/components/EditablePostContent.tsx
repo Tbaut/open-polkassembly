@@ -79,11 +79,11 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 
 	useEffect(() => {
 		if (errorEdit) {
-			console.log('errorEdit',errorEdit);
+			console.error('errorEdit',errorEdit);
 		}
 
 		if (dataEdit){
-			console.log('dataEdit',dataEdit.toString());
+			console.error('dataEdit',dataEdit.toString());
 		}
 	}, [dataEdit, errorEdit]);
 

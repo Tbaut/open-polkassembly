@@ -30,12 +30,10 @@ export const useTextile = () => {
 
 	useEffect(() => {
 		if (!textileAuthInfo){
-			console.log('--> no auth info yet, calling getAuthInfo');
 			getAuthInfo();
 			return;
 		}
 
-		console.log('textileAuthInfo', textileAuthInfo);
 		setClient(Client.withUserAuth({ ...textileAuthInfo }));
 	},[getAuthInfo, textileAuthInfo]);
 
@@ -69,7 +67,6 @@ export const useTextile = () => {
 	}, [client, thread]);
 
 	const createComment = useCallback((comment: TextileComment[]) => {
-		console.log('creating comment', comment);
 		if (!client){
 			return null;
 		}
