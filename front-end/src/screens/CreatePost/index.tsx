@@ -68,8 +68,7 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 				if (data && data.postSubscribe && data.postSubscribe.message) {
 					console.log(data.postSubscribe.message);
 				}
-			})
-			.catch((e) => console.error('Error subscribing to post',e));
+			});
 	}, [currentUser, postSubscribeMutation]);
 
 	const createPoll = useCallback((postId: number | undefined) => {
@@ -97,8 +96,7 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 				blockEnd,
 				postId
 			}
-		})
-			.catch((e) => console.error('Error subscribing to post', e));
+		}).catch((e) => console.error('Error creating Poll', e));
 	}, [hasPoll, currenBlockNumber, blocktime, createPollMutation, queueNotification]);
 
 	const handleSend = () => {
