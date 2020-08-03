@@ -11,17 +11,19 @@ export type Collection = collection;
 
 export interface Post {
     _id: string;
-    title: string;
-    content: string;
     author: string;
-    createdAd: string;
+    content: string;
+    createdAt: string;
+    title: string;
+    updatedAt: string;
   }
 
 export interface Comment {
     _id: string;
+    author: string;
+    content: string;
+    createdAt: string;
     postId: string;
     title: string;
-    content: string;
-    author: string;
-    createdAd: string;
+    updatedAt: string;
   }

@@ -16679,6 +16679,10 @@ export type AddPostCommentMutation = (
   & { insert_comments?: Maybe<(
     { __typename?: 'comments_mutation_response' }
     & Pick<Comments_Mutation_Response, 'affected_rows'>
+    & { returning: Array<(
+      { __typename?: 'comments' }
+      & Pick<Comments, 'id'>
+    )> }
   )> }
 );
 
@@ -18761,6 +18765,9 @@ export const AddPostCommentDocument = gql`
   __typename
   insert_comments(objects: {author_id: $authorId, content: $content, post_id: $postId}) {
     affected_rows
+    returning {
+      id
+    }
   }
 }
     `;

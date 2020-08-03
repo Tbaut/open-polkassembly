@@ -8,14 +8,6 @@ import { useCallback,useEffect, useMemo,useState } from 'react';
 import { useTextileAuthInfoLazyQuery } from 'src/generated/graphql';
 import { textileCollection,TextileComment,TextilePost } from 'src/types';
 
-// const textileTokenInfo = {
-// 'key': 'brf3mvikosuht6syaqjmfaqtnxi',
-// 'libp2pIdentity': 'bbaareydwzseqsqvljvsb2h3ct2em7gz7t3edbux2fntas3u7tr7odlo4iml6bvcpfcfmf7lrhu6eadvwlwo4li4caqbts2peu577obgqxx3taf7a2rhsrcwc7vyt2pcab23f3hofuobaiazznhsko77xatil35zq',
-// 'msg': '2020-07-14T23:41:40.122Z',
-// 'sig': 'bvsapvqxdmst45dh4fm5tpozgckijzbfsc44ic62v4z54k7g5syna',
-// 'token': 'eyJhbGciOiJFZDI1NTE5IiwidHlwIjoiSldUIn0.eyJpYXQiOjE1OTQ3NjY1MDEsImlzcyI6ImJiYWFyZWlnd2pvYXd1ZWc1a3ZobWMzNjI3Z3Zja2htZTd6emZlbnVqYXVqcHRodGd6Y21odHRvYTZ1Iiwic3ViIjoiYmJhYXJlaWF4NGRrZTZrZWt5bDZ4Y3BqNGlhaGxteG01eXdyeWViYWRoZnU2amozNzY0Y25icHB4Z2EifQ.vlOinb41Rf5oLMz0QE0gFOra8xIxm7D291UJfj_583CVPYIqBt6ii5S-qEAxFMy9dyoWMkqS3x2NgW-_cxdwAg'
-// };
-
 export const useTextile = () => {
 	// Todo Should be InstanceList<any>
 	const [pendingComment, setPendingComment] = useState(false);
@@ -26,14 +18,6 @@ export const useTextile = () => {
 	const [valuePost, setValuePost] = useState<string[] | null>(null);
 	const [errorPost, setErrorPost] = useState<Error | null>(null);
 	const [client, setClient] = useState<Client | null>(null);
-
-	const [pendingFind, setPendingFind] = useState(false);
-	const [valueFind, setValueFind] = useState<any | null>(null);
-	const [errorFind, setErrorFind] = useState<Error | null>(null);
-
-	const [pendingFindComment, setPendingFindComment] = useState(false);
-	const [valueFindComment, setValueFindComment] = useState<any | null>(null);
-	const [errorFindComment, setErrorFindComment] = useState<Error | null>(null);
 
 	const threadId = process.env.REACT_APP_TEXTILE_THREAD_ID;
 	const thread = useMemo(() => {
@@ -85,7 +69,7 @@ export const useTextile = () => {
 	}, [client, thread]);
 
 	const createComment = useCallback((comment: TextileComment[]) => {
-
+		console.log('creating comment', comment);
 		if (!client){
 			return null;
 		}
@@ -100,53 +84,16 @@ export const useTextile = () => {
 			.finally(() => setPendingComment(false));
 	}, [client, thread]);
 
-	const findPost = useCallback((query: any) => {
-		console.log('--> findPost');
-		if (!client){
-			return null;
-		}
-
-		setPendingFind(true);
-		setValueFind(null);
-		setErrorFind(null);
-
-		client.find(thread, textileCollection.POST, query)
-			.then(response => setValueFind(response))
-			.catch(error => setErrorFind(error))
-			.finally(() => setPendingFind(false));
-	},[client, thread]);
-
-	const findComment = useCallback((query: any) => {
-		if (!client){
-			return null;
-		}
-
-		setPendingFindComment(true);
-		setValueFindComment(null);
-		setErrorFindComment(null);
-
-		client.find(thread, textileCollection.COMMENT, query)
-			.then(response => setValueFindComment(response))
-			.catch(error => setErrorFindComment(error))
-			.finally(() => setPendingFindComment(false));
-	},[client, thread]);
-
 	return {
+		client,
 		createComment,
 		createPost,
 		errorComment,
-		errorFind,
-		errorFindComment,
 		errorPost,
-		findComment,
-		findPost,
 		pendingComment,
-		pendingFind,
-		pendingFindComment,
 		pendingPost,
+		thread,
 		valueComment,
-		valueFind,
-		valueFindComment,
 		valuePost
 	};
 };

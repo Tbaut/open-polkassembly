@@ -9,6 +9,7 @@ import { Controller,useForm } from 'react-hook-form';
 import { GoCheck, GoX } from 'react-icons/go';
 import { useLocation } from 'react-router-dom';
 import { Icon } from 'semantic-ui-react';
+import { useTextileEditComment } from 'src/hooks/useTextileEditComment';
 import getNetwork from 'src/util/getNetwork';
 
 import { NotificationContext } from '../../context/NotificationContext';
@@ -68,10 +69,21 @@ const EditableCommentContent = ({ authorId, className, content, commentId, refet
 	const { queueNotification } = useContext(NotificationContext);
 	const { control, errors, handleSubmit, setValue } = useForm();
 	const { pathname } = useLocation();
+	const [ editComment, { data: dataEdit, error: errorEdit } ] = useTextileEditComment();
 
 	useEffect(() => {
 		isEditing && setValue('content',content);
 	},[content, isEditing, setValue]);
+
+	useEffect(() => {
+		if (errorEdit) {
+			console.log('errorEdit',errorEdit);
+		}
+
+		if (dataEdit){
+			console.log('dataEdit',dataEdit.toString());
+		}
+	}, [dataEdit, errorEdit]);
 
 	const handleCancel = () => {
 		toggleEdit();
@@ -79,6 +91,11 @@ const EditableCommentContent = ({ authorId, className, content, commentId, refet
 	};
 	const handleSave = () => {
 		setIsEditing(false);
+		editComment({
+			content: newContent,
+			updatedAt: Date.now().toString()
+		}, `${commentId}`);
+
 		editCommentMutation( {
 			variables: {
 				content: newContent,
