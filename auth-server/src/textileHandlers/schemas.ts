@@ -28,6 +28,10 @@ export const postSchema = {
 		createdAt: {
 			type: 'string',
 			description: 'The creation date of the post'
+		},
+		updatedAt: {
+			type: 'string',
+			description: 'The update date of the post'
 		}
 	}
 };
@@ -55,6 +59,10 @@ export const commentSchema = {
 		createdAt: {
 			type: 'string',
 			description: 'The creation date of the post'
+		},
+		updatedAt: {
+			type: 'string',
+			description: 'The update date of the post'
 		}
 	}
 };

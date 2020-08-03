@@ -8,14 +8,6 @@ import { useCallback,useEffect, useMemo,useState } from 'react';
 import { useTextileAuthInfoLazyQuery } from 'src/generated/graphql';
 import { textileCollection,TextileComment,TextilePost } from 'src/types';
 
-// const textileTokenInfo = {
-// 'key': 'brf3mvikosuht6syaqjmfaqtnxi',
-// 'libp2pIdentity': 'bbaareydwzseqsqvljvsb2h3ct2em7gz7t3edbux2fntas3u7tr7odlo4iml6bvcpfcfmf7lrhu6eadvwlwo4li4caqbts2peu577obgqxx3taf7a2rhsrcwc7vyt2pcab23f3hofuobaiazznhsko77xatil35zq',
-// 'msg': '2020-07-14T23:41:40.122Z',
-// 'sig': 'bvsapvqxdmst45dh4fm5tpozgckijzbfsc44ic62v4z54k7g5syna',
-// 'token': 'eyJhbGciOiJFZDI1NTE5IiwidHlwIjoiSldUIn0.eyJpYXQiOjE1OTQ3NjY1MDEsImlzcyI6ImJiYWFyZWlnd2pvYXd1ZWc1a3ZobWMzNjI3Z3Zja2htZTd6emZlbnVqYXVqcHRodGd6Y21odHRvYTZ1Iiwic3ViIjoiYmJhYXJlaWF4NGRrZTZrZWt5bDZ4Y3BqNGlhaGxteG01eXdyeWViYWRoZnU2amozNzY0Y25icHB4Z2EifQ.vlOinb41Rf5oLMz0QE0gFOra8xIxm7D291UJfj_583CVPYIqBt6ii5S-qEAxFMy9dyoWMkqS3x2NgW-_cxdwAg'
-// };
-
 export const useTextile = () => {
 	// Todo Should be InstanceList<any>
 	const [pendingComment, setPendingComment] = useState(false);

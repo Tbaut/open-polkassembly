@@ -55,7 +55,7 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 
 	useEffect(() => {
 		setIsValidComments(null);
-		findComments(new Where('postId').eq(id.toString()));
+		findComments(new Where('postId').eq(id.toString()).orderBy('createdAt'));
 	}, [findComments, id, comments]);
 
 	useEffect(() => {
