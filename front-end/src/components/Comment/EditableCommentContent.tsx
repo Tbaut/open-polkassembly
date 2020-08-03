@@ -77,11 +77,11 @@ const EditableCommentContent = ({ authorId, className, content, commentId, refet
 
 	useEffect(() => {
 		if (errorEdit) {
-			console.log('errorEdit',errorEdit);
+			console.error('errorEdit',errorEdit);
 		}
 
 		if (dataEdit){
-			console.log('dataEdit',dataEdit.toString());
+			console.error('dataEdit',dataEdit.toString());
 		}
 	}, [dataEdit, errorEdit]);
 
