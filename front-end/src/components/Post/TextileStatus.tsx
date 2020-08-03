@@ -44,7 +44,7 @@ const DivContent = styled.div`
 const TextileStatus = ({ author, className, comments, content, id, title } : Props) => {
 	const [isValidPost, setIsValidPost] = useState<boolean | null>(null);
 	const [findPosts, { data: dataPosts, error: errorPosts }] = useTextileFindPosts();
-	const [isValiComments, setIsValidComments] = useState<boolean | null>(null);
+	const [isValidComments, setIsValidComments] = useState<boolean | null>(null);
 	const [findComments, { data: dataComments, error: errorComments }] = useTextileFindComments();
 	const [popupText, setPopupText] = useState('Verifying content on IPFS...');
 
@@ -87,7 +87,9 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 				console.error(`Post author doesnot match! ${author} !== ${textileAuthor}`);
 				setIsValidPost(false);
 			} else {
-				setPopupText('The content on this page matches with the one stored on IPFS!');
+				if (isValidComments === null) {
+					setPopupText('The content on this page matches with the one stored on IPFS!');
+				}
 				setIsValidPost(true);
 			}
 		}
@@ -97,7 +99,7 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 			setIsValidPost(false);
 		}
 
-	}, [author, dataPosts, content, title]);
+	}, [author, dataPosts, content, title, isValidComments]);
 
 	useEffect(() => {
 		console.log('dataComments',dataComments);
@@ -116,7 +118,9 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 					console.error(`Comment content donnot match! ${content} !== ${IPFSContent}`);
 					setIsValidComments(false);
 				} else {
-					setPopupText('The content on this page matches with the one stored on IPFS!');
+					if (isValidPost === null) {
+						setPopupText('The content on this page matches with the one stored on IPFS!');
+					}
 					setIsValidComments(true);
 				}
 			});
@@ -131,7 +135,7 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 			setIsValidComments(false);
 		}
 
-	}, [dataComments, comments]);
+	}, [dataComments, comments, isValidPost]);
 
 	return (
 		<div className={className}>
@@ -139,9 +143,9 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 				className={className}
 				trigger={<SpanContent
 					className={
-						(isValidPost === null || isValiComments === null)
+						(isValidPost === null || isValidComments === null)
 							? 'grey'
-							: (isValidPost === true && isValiComments === true)
+							: (isValidPost === true && isValidComments === true)
 								? 'green'
 								: 'red'
 					}>●</SpanContent>}
