@@ -46,7 +46,8 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 	const [findPosts, { data: dataPosts, error: errorPosts }] = useTextileFindPosts();
 	const [isValidComments, setIsValidComments] = useState<boolean | null>(null);
 	const [findComments, { data: dataComments, error: errorComments }] = useTextileFindComments();
-	const [popupText, setPopupText] = useState('Verifying content on IPFS...');
+	const [popupTextPost, setPopupTextPost] = useState('Verifying content on IPFS...');
+	const [popupTextComments, setPopupTextComments] = useState('Verifying content on IPFS...');
 
 	useEffect(() => {
 		setIsValidPost(null);
@@ -75,27 +76,25 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 			const { content: textileContent, title: textileTitle, author: textileAuthor } = dataPosts.instancesList[0];
 
 			if (content !== textileContent){
-				setPopupText('Post content donot match between this page and what is stored on IPFS. This page should not be trusted.');
+				setPopupTextPost('Post content donot match between this page and what is stored on IPFS. This page should not be trusted.');
 				console.error(`Post content doesnot match! ${content} !== ${textileContent}`);
 				setIsValidPost(false);
 			} else if (title !== textileTitle){
-				setPopupText('Post title donot match between this page and what is stored on IPFS. This page should not be trusted.');
+				setPopupTextPost('Post title donot match between this page and what is stored on IPFS. This page should not be trusted.');
 				console.error(`Title doesnot match! ${title} !== ${textileTitle}`);
 				setIsValidPost(false);
 			} else if (author !== textileAuthor){
-				setPopupText('Post author donot match between this page and what is stored on IPFS. This page should not be trusted.');
+				setPopupTextPost('Post author donot match between this page and what is stored on IPFS. This page should not be trusted.');
 				console.error(`Post author doesnot match! ${author} !== ${textileAuthor}`);
 				setIsValidPost(false);
 			} else {
-				if (isValidComments === null) {
-					setPopupText('The content on this page matches with the one stored on IPFS!');
-				}
+				setPopupTextPost('The content on this page matches with the one stored on IPFS!');
 				setIsValidPost(true);
 			}
 		}
 
 		if (dataPosts?.instancesList.length === 0){
-			setPopupText('No data corresponding to this id could be found on IPFS. This page should not be trusted.');
+			setPopupTextPost('No data corresponding to this id could be found on IPFS. This page should not be trusted.');
 			setIsValidPost(false);
 		}
 
@@ -110,28 +109,26 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 				const username = author?.username;
 
 				if(username !== IPFSAuthor){
-					setPopupText('Author in comments donot match between this page and what is stored on IPFS. This page should not be trusted.');
+					setPopupTextComments('Author in comments donot match between this page and what is stored on IPFS. This page should not be trusted.');
 					console.error(`Comment author donnot match! ${IPFSAuthor} !== ${username}`);
 					setIsValidComments(false);
 				} else if(content !== IPFSContent){
-					setPopupText('Content in comments donot match between this page and what is stored on IPFS. This page should not be trusted.');
+					setPopupTextComments('Content in comments donot match between this page and what is stored on IPFS. This page should not be trusted.');
 					console.error(`Comment content donnot match! ${content} !== ${IPFSContent}`);
 					setIsValidComments(false);
 				} else {
-					if (isValidPost === null) {
-						setPopupText('The content on this page matches with the one stored on IPFS!');
-					}
+					setPopupTextComments('The content on this page matches with the one stored on IPFS!');
 					setIsValidComments(true);
 				}
 			});
 		}
 
 		if (dataComments?.instancesList.length === 0 && comments?.length === 0){
-			setPopupText('The content on this page matches with the one stored on IPFS!');
+			setPopupTextComments('The content on this page matches with the one stored on IPFS!');
 			setIsValidComments(true);
 		// in case there's no comment found on IPFS
 		} else if (dataComments?.instancesList.length === 0){
-			setPopupText('No data corresponding to this id could be found on IPFS. This page should not be trusted.');
+			setPopupTextComments('No data corresponding to this id could be found on IPFS. This page should not be trusted.');
 			setIsValidComments(false);
 		}
 
@@ -149,7 +146,9 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 								? 'green'
 								: 'red'
 					}>●</SpanContent>}
-				content={<DivContent>{popupText}</DivContent>}
+				content={<DivContent>{isValidPost === false
+					? popupTextPost
+					: popupTextComments}</DivContent>}
 				hoverable={true}
 				position='top center'
 			/>
