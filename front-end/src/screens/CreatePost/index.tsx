@@ -68,6 +68,8 @@ const CreatePost = ({ className }:Props): JSX.Element => {
 				if (data && data.postSubscribe && data.postSubscribe.message) {
 					console.log(data.postSubscribe.message);
 				}
+			}).catch(() => {
+				//do nothing
 			});
 	}, [currentUser, postSubscribeMutation]);
 

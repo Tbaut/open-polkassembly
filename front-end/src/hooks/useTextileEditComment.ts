@@ -8,14 +8,12 @@ import { textileCollection } from 'src/types';
 import { useTextile } from './useTextile';
 
 export const useTextileEditComment = (): [(comment: Record<string, string>, id: string) => void, {
-    data: any;
     error: Error | null;
     loading: boolean;
 }] => {
 	const { thread, client } = useTextile();
 
 	const [loading, setLoading] = useState(false);
-	const [data, setData] = useState<any | null>(null);
 	const [error, setError] = useState<Error | null>(null);
 
 	const editComment = useCallback((comment: Record<string, string>, id: string) => {
@@ -24,12 +22,10 @@ export const useTextileEditComment = (): [(comment: Record<string, string>, id: 
 		}
 
 		setLoading(true);
-		setData(null);
 		setError(null);
 
 		client.findByID(thread, textileCollection.COMMENT, id).then((previousComment) => {
 			client.save(thread, textileCollection.COMMENT, [{ ...previousComment.instance, ...comment }])
-				.then(response => setData(response))
 				.catch(error => setError(error))
 				.finally(() => setLoading(false));
 		}).catch(error => setError(error));
@@ -38,7 +34,6 @@ export const useTextileEditComment = (): [(comment: Record<string, string>, id: 
 	return [
 		editComment,
 		{
-			data,
 			error,
 			loading
 		}

@@ -68,7 +68,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 	const [newTitle, setNewTitle] = useState(title || '');
 	const { queueNotification } = useContext(NotificationContext);
 	const {  control, errors, handleSubmit, setValue } = useForm();
-	const [ editPost, { data: dataEdit, error: errorEdit } ] = useTextileEditPost();
+	const [ editPost, { error: errorEdit } ] = useTextileEditPost();
 	const [editPostMutation, { error }] = useEditPostMutation({
 		variables: {
 			content: newContent,
@@ -81,11 +81,7 @@ const EditablePostContent = ({ className, isEditing, onchainId, post, postStatus
 		if (errorEdit) {
 			console.error('errorEdit',errorEdit);
 		}
-
-		if (dataEdit){
-			console.error('dataEdit',dataEdit.toString());
-		}
-	}, [dataEdit, errorEdit]);
+	}, [errorEdit]);
 
 	const handleCancel = () => {
 		toggleEdit();

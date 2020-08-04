@@ -78,6 +78,8 @@ const PostCommentForm = ({ className, postId, refetch }: Props) => {
 				if (data && data.postSubscribe && data.postSubscribe.message) {
 					console.log(data.postSubscribe.message);
 				}
+			}).catch(() => {
+				//do nothing
 			});
 	}, [postParticipated, postSubscribeMutation]);
 

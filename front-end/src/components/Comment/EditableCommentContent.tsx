@@ -69,7 +69,7 @@ const EditableCommentContent = ({ authorId, className, content, commentId, refet
 	const { queueNotification } = useContext(NotificationContext);
 	const { control, errors, handleSubmit, setValue } = useForm();
 	const { pathname } = useLocation();
-	const [ editComment, { data: dataEdit, error: errorEdit } ] = useTextileEditComment();
+	const [ editComment, { error: errorEdit } ] = useTextileEditComment();
 
 	useEffect(() => {
 		isEditing && setValue('content',content);
@@ -79,11 +79,7 @@ const EditableCommentContent = ({ authorId, className, content, commentId, refet
 		if (errorEdit) {
 			console.error('errorEdit',errorEdit);
 		}
-
-		if (dataEdit){
-			console.error('dataEdit',dataEdit.toString());
-		}
-	}, [dataEdit, errorEdit]);
+	}, [errorEdit]);
 
 	const handleCancel = () => {
 		toggleEdit();

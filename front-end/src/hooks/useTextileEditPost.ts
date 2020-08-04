@@ -8,14 +8,12 @@ import { textileCollection, TextilePost } from 'src/types';
 import { useTextile } from './useTextile';
 
 export const useTextileEditPost = (): [(post: TextilePost[]) => void, {
-    data: any;
     error: Error | null;
     loading: boolean;
 }] => {
 	const { thread, client } = useTextile();
 
 	const [loading, setLoading] = useState(false);
-	const [data, setData] = useState<any | null>(null);
 	const [error, setError] = useState<Error | null>(null);
 
 	const editPost = useCallback((post: TextilePost[]) => {
@@ -24,11 +22,9 @@ export const useTextileEditPost = (): [(post: TextilePost[]) => void, {
 		}
 
 		setLoading(true);
-		setData(null);
 		setError(null);
 
 		client.save(thread, textileCollection.POST, post)
-			.then(response => setData(response))
 			.catch(error => setError(error))
 			.finally(() => setLoading(false));
 	},[client, thread]);
@@ -36,7 +32,6 @@ export const useTextileEditPost = (): [(post: TextilePost[]) => void, {
 	return [
 		editPost,
 		{
-			data,
 			error,
 			loading
 		}

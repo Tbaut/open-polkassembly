@@ -48,16 +48,17 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 	const [findComments, { data: dataComments, error: errorComments }] = useTextileFindComments();
 	const [popupTextPost, setPopupTextPost] = useState('Verifying content on IPFS...');
 	const [popupTextComments, setPopupTextComments] = useState('Verifying content on IPFS...');
+	const [refetch, setRefetch] = useState<number>(0);
 
 	useEffect(() => {
 		setIsValidPost(null);
 		findPosts(new Where('_id').eq(id.toString()));
-	}, [findPosts, id, content]);
+	}, [findPosts, id, content, refetch]);
 
 	useEffect(() => {
 		setIsValidComments(null);
 		findComments(new Where('postId').eq(id.toString()).orderBy('createdAt'));
-	}, [findComments, id, comments]);
+	}, [findComments, id, comments, refetch]);
 
 	useEffect(() => {
 		if(errorPosts){
@@ -145,10 +146,15 @@ const TextileStatus = ({ author, className, comments, content, id, title } : Pro
 							: (isValidPost === true && isValidComments === true)
 								? 'green'
 								: 'red'
-					}>●</SpanContent>}
-				content={<DivContent>{isValidPost === false
-					? popupTextPost
-					: popupTextComments}</DivContent>}
+					}
+					onClick={() => {
+						setRefetch(refetch+1);
+					}}>●</SpanContent>}
+				content={<DivContent>
+					{isValidPost === false
+						? popupTextPost
+						: popupTextComments} - Click to refresh.
+				</DivContent>}
 				hoverable={true}
 				position='top center'
 			/>
