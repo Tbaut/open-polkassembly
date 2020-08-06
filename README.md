@@ -5,6 +5,8 @@ Open Polkassembly was created for Hackfs. It is a fork of https://github.com/par
 Open Polkassembly is the place to discuss and vote on Kusama and Polkadot governance. Any post or comment is hosted both on a fast centralized server, and on IPFS. For each post, a "censorship status" is shown in form of a gray (checking), green (all good), red (don't trust what you read).
 You can click this status to refresh it.
 
+Open Polkassembly front-end is hosted on IPFS and is available using the fleek domain: https://open-polkassembly.on.fleek.co/ (also hosted separately and available using the following IPNS peer id https://bafzbeiezlca63rdn2sqzl6kub2yhsnnpckumufl34yfwmxi7mqfwcoavne.ipns.dweb.link/)
+
 ## Examples:
 
 The post available on https://open-polkassembly.on.fleek.co/post/3/ is genuine and no malicious actor has ever changed the data on the centralized DB.  
